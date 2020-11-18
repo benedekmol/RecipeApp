@@ -92,19 +92,6 @@ class RecipeActivity : AppCompatActivity() {
             var gson = Gson()
             recipe = gson.fromJson(intent.getStringExtra("RECIPE"), RecipeItem::class.java)
 
-
-            /*Log.d("App", recipe.name)
-            id = recipeJSON["id"].toString().toInt()
-            Log.d("App", id.toString())
-            name = recipeJSON["name"].toString()
-            ingridients = recipeJSON["ingridients"].toString()
-            directions = recipeJSON["directions"].toString()*/
-
-            /*
-            recipeNameEt!!.setText(recipeJSON["name"].toString())
-            recipeIngridientsEt!!.setText(recipeJSON["ingridients"].toString())
-            recipeDirectionsEt!!.setText(recipeJSON["directions"].toString())*/
-
             recipeNameEt!!.setText(recipe.name)
             recipeIngridientsEt!!.setText(recipe.ingridients)
             recipeDirectionsEt!!.setText(recipe.directions)
@@ -133,12 +120,7 @@ class RecipeActivity : AppCompatActivity() {
             builder.setPositiveButton("YES") { dialog, which ->
                 Log.d("App", "click on yes")
                 val resultIntent = Intent()
-                /*resultIntent.putExtra("RESULT",
-                    "{ \"name\" : \"${recipeNameEt!!.getText().toString()}\"," +
-                            "\"ingridients\":\"${recipeIngridientsEt!!.getText().toString()}\"," +
-                            "\"directions\" : \"${recipeDirectionsEt!!.getText().toString()}\"}")
 
-                 */
                 resultIntent.putExtra("RESULT", recipeNewJson)
                 setResult(MainActivity.ResultCode.CREATED.toInt(MainActivity.ResultCode.CREATED),resultIntent)
                 super.onBackPressed()
@@ -175,13 +157,7 @@ class RecipeActivity : AppCompatActivity() {
             //var recipeModefiedString = recipeModifiedJson.toString()
             builder.setPositiveButton("YES") { dialog, which ->
                 var resultIntent = Intent()
-                /*resultIntent.putExtra("RESULT",
-                    "{ \"id\" : \"${recipe.id}\"," +
-                            " \"name\" : \"${recipeNameEt!!.getText().toString()}\"," +
-                            "\"ingridients\":\"${recipeIngridientsEt!!.getText().toString()}\"," +
-                            "\"directions\" : \"${recipeDirectionsEt!!.getText().toString()}\"}")
-                setResult(MainActivity.ResultCode.MODIFIED.toInt(MainActivity.ResultCode.MODIFIED),resultIntent)
-                 */
+
                 Log.d("App", recipeModifiedJson.toString())
                 resultIntent.putExtra("RESULT",recipeModifiedJson)
                 setResult(MainActivity.ResultCode.MODIFIED.toInt(MainActivity.ResultCode.MODIFIED),resultIntent)
@@ -194,7 +170,6 @@ class RecipeActivity : AppCompatActivity() {
                 resultIntent.putExtra("RESULT", "")
                 setResult(MainActivity.ResultCode.UNCHANGED.toInt(MainActivity.ResultCode.UNCHANGED),resultIntent)
                 super.onBackPressed()
-                Log.d("App", "RecipeActivity Recipe unchanged!")
             }
             builder.show()
         }
