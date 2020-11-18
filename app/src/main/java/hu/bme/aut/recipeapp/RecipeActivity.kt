@@ -14,6 +14,9 @@ import org.json.JSONObject
 
 class RecipeActivity : AppCompatActivity() {
 
+
+
+    //TODO CAMERA PICTURE TAKE AND STORE
     //modify
     private var modifiable : Boolean = false
     private var modified : Boolean = false
