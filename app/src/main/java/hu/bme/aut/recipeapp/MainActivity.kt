@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
                     onItemChanged(recipe)
 
                     //TODO SOMETIMES LOAD ITEMS FINISHES FIRST
-                    Thread.sleep(1000)
+                    //Thread.sleep(1000)
 
                     loadItemsInBackground()
                     Log.d("App", recipe.recipeToString())
@@ -150,9 +150,10 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
     override fun onItemSelected(item: RecipeItem) {
         val showRecipeIntent = Intent()
         showRecipeIntent.setClass(this@MainActivity, RecipeActivity::class.java)
-        showRecipeIntent.putExtra("RECIPE", item.recipeToString())
+        //showRecipeIntent.putExtra("RECIPE", item.recipeToString())
+        showRecipeIntent.putExtra("RECIPE", item.toJson())
         startActivityForResult(showRecipeIntent, LAUNCH_RECIPE_ACTIVITY)
-        Log.d("App", item.recipeToString())
+        Log.d("App", "to json: " + item.toJson())
     }
 
     override fun onItemChanged(item: RecipeItem) {

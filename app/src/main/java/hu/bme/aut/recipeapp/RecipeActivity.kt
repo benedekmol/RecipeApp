@@ -9,6 +9,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import com.google.gson.Gson
+import hu.bme.aut.recipeapp.data.RecipeItem
 import kotlinx.android.synthetic.main.activity_recipe.*
 import org.json.JSONObject
 
@@ -86,11 +88,19 @@ class RecipeActivity : AppCompatActivity() {
             //OTHERWISE LOAD THE RECIPE
             var recipeJSON = JSONObject(intent.getStringExtra("RECIPE").toString())
 
+            //TODO JSON WORKS!
+            var gson = Gson()
+            var recipe = gson.fromJson(intent.getStringExtra("RECIPE"), RecipeItem::class.java)
+
+
+            Log.d("App", recipe.name)
+            Log.d("App", recipe.id!!::class.simpleName.toString())
             id = recipeJSON["id"].toString().toInt()
             Log.d("App", id.toString())
             name = recipeJSON["name"].toString()
             ingridients = recipeJSON["ingridients"].toString()
             directions = recipeJSON["directions"].toString()
+
 
             recipeNameEt!!.setText(recipeJSON["name"].toString())
             recipeIngridientsEt!!.setText(recipeJSON["ingridients"].toString())
