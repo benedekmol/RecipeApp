@@ -16,7 +16,7 @@ import org.json.JSONObject
 
 class RecipeActivity : AppCompatActivity() {
 
-
+    private lateinit var recipe : RecipeItem
 
     //TODO CAMERA PICTURE TAKE AND STORE
     //modify
@@ -90,44 +90,56 @@ class RecipeActivity : AppCompatActivity() {
 
             //TODO JSON WORKS!
             var gson = Gson()
-            var recipe = gson.fromJson(intent.getStringExtra("RECIPE"), RecipeItem::class.java)
+            recipe = gson.fromJson(intent.getStringExtra("RECIPE"), RecipeItem::class.java)
 
 
-            Log.d("App", recipe.name)
-            Log.d("App", recipe.id!!::class.simpleName.toString())
+            /*Log.d("App", recipe.name)
             id = recipeJSON["id"].toString().toInt()
             Log.d("App", id.toString())
             name = recipeJSON["name"].toString()
             ingridients = recipeJSON["ingridients"].toString()
-            directions = recipeJSON["directions"].toString()
+            directions = recipeJSON["directions"].toString()*/
 
-
+            /*
             recipeNameEt!!.setText(recipeJSON["name"].toString())
             recipeIngridientsEt!!.setText(recipeJSON["ingridients"].toString())
-            recipeDirectionsEt!!.setText(recipeJSON["directions"].toString())
+            recipeDirectionsEt!!.setText(recipeJSON["directions"].toString())*/
+
+            recipeNameEt!!.setText(recipe.name)
+            recipeIngridientsEt!!.setText(recipe.ingridients)
+            recipeDirectionsEt!!.setText(recipe.directions)
 
             recipeNameEt!!.isEnabled = false
             recipeIngridientsEt!!.isEnabled = false
             recipeDirectionsEt!!.isEnabled = false
         }
-
-
     }
 
     override fun onBackPressed() {
+        var recipeNew = RecipeItem(id = null,
+            name = recipeNameEt!!.getText().toString(),
+            ingridients = recipeIngridientsEt!!.getText().toString(),
+            directions = recipeDirectionsEt!!.getText().toString())
+
+        var recipeNewJson = recipeNew.toJson()
 
         if (intent.getStringExtra("RECIPE") == ""){
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Androidly Alert")
             builder.setMessage("We have a message")
 
+            Log.d("App", "created recipe to json: " + recipeNewJson)
+
             builder.setPositiveButton("YES") { dialog, which ->
                 Log.d("App", "click on yes")
                 val resultIntent = Intent()
-                resultIntent.putExtra("RESULT",
+                /*resultIntent.putExtra("RESULT",
                     "{ \"name\" : \"${recipeNameEt!!.getText().toString()}\"," +
                             "\"ingridients\":\"${recipeIngridientsEt!!.getText().toString()}\"," +
                             "\"directions\" : \"${recipeDirectionsEt!!.getText().toString()}\"}")
+
+                 */
+                resultIntent.putExtra("RESULT", recipeNewJson)
                 setResult(MainActivity.ResultCode.CREATED.toInt(MainActivity.ResultCode.CREATED),resultIntent)
                 super.onBackPressed()
             }
@@ -140,9 +152,9 @@ class RecipeActivity : AppCompatActivity() {
                 super.onBackPressed()
             }
             builder.show()
-        } else if(name == recipeNameEt!!.getText().toString() &&
-                ingridients == recipeIngridientsEt!!.getText().toString() &&
-                directions == recipeDirectionsEt!!.getText().toString()){
+        } else if(recipe.name == recipeNew.name &&
+                recipe.ingridients == recipeNew.ingridients &&
+                recipe.directions == recipeNew.directions){
             val resultIntent = Intent()
             resultIntent.putExtra("RESULT", "")
             setResult(MainActivity.ResultCode.UNCHANGED.toInt(MainActivity.ResultCode.UNCHANGED),resultIntent)
@@ -154,14 +166,26 @@ class RecipeActivity : AppCompatActivity() {
             builder.setTitle("Sure?")
             builder.setMessage("Modify the recipe?")
 
+            var recipeModified = RecipeItem(id = recipe.id,
+                name = recipeNameEt!!.getText().toString(),
+                ingridients = recipeIngridientsEt!!.getText().toString(),
+                directions = recipeDirectionsEt!!.getText().toString())
+
+            var recipeModifiedJson = recipeModified.toJson()
+            //var recipeModefiedString = recipeModifiedJson.toString()
             builder.setPositiveButton("YES") { dialog, which ->
                 var resultIntent = Intent()
-                resultIntent.putExtra("RESULT",
-                    "{ \"id\" : \"${id}\"," +
+                /*resultIntent.putExtra("RESULT",
+                    "{ \"id\" : \"${recipe.id}\"," +
                             " \"name\" : \"${recipeNameEt!!.getText().toString()}\"," +
                             "\"ingridients\":\"${recipeIngridientsEt!!.getText().toString()}\"," +
                             "\"directions\" : \"${recipeDirectionsEt!!.getText().toString()}\"}")
                 setResult(MainActivity.ResultCode.MODIFIED.toInt(MainActivity.ResultCode.MODIFIED),resultIntent)
+                 */
+                Log.d("App", recipeModifiedJson.toString())
+                resultIntent.putExtra("RESULT",recipeModifiedJson)
+                setResult(MainActivity.ResultCode.MODIFIED.toInt(MainActivity.ResultCode.MODIFIED),resultIntent)
+
                 super.onBackPressed()
             }
 

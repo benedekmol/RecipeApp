@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Database
 import androidx.room.Room
+import com.google.gson.Gson
 import hu.bme.aut.recipeapp.adapter.RecipeAdapter
 import hu.bme.aut.recipeapp.data.RecipeItem
 import hu.bme.aut.recipeapp.data.RecipeListDatabase
@@ -78,10 +79,16 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
             //IF WE CREATED A RECIPE WE SHOULD SAVE IT IN THE DB
             when (resultCode) {
                 ResultCode.CREATED.toInt(ResultCode.CREATED) -> {
-                    var result = data?.getStringExtra("RESULT").toString()
+                    /*var result = data?.getStringExtra("RESULT").toString()
                     Log.d("App", result)
                     var jsonResult = JSONObject(result)
                     var recipe = RecipeItem(id = null, name = jsonResult["name"].toString(),ingridients = jsonResult["ingridients"].toString(), directions = jsonResult["directions"].toString())
+
+                     */
+
+                    var gson = Gson()
+                    var recipe = gson.fromJson(data?.getStringExtra("RESULT"), RecipeItem::class.java)
+
                     thread {
                         val newId = database.recipeItemDao().insert(recipe)
                         val newRecipeItem = RecipeItem(
@@ -97,21 +104,28 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
                 }
                 ResultCode.ABORTED.toInt(ResultCode.ABORTED) -> Log.d("App", "halasdfasdfasdf")
                 ResultCode.MODIFIED.toInt(ResultCode.MODIFIED) -> {
-                    Log.d("App", data?.getStringExtra("RESULT").toString())
+                    /*Log.d("App", data?.getStringExtra("RESULT").toString())
                     var jsonRecipe = JSONObject(data?.getStringExtra("RESULT").toString())
                     var recipe = RecipeItem(
                         id = jsonRecipe["id"].toString().toLong(),
                         name = jsonRecipe["name"].toString(),
                         ingridients = jsonRecipe["ingridients"].toString(),
                         directions = jsonRecipe["directions"].toString())
+                     */
 
-                    onItemChanged(recipe)
+                    Log.d("App", "Idaig?")
+                    var gson = Gson()
+                    var recipeModified = gson.fromJson(data?.getStringExtra("RESULT"), RecipeItem::class.java)
+                    Log.d("App", "gson parsolas" + recipeModified.id)
+                    onItemChanged(recipeModified)
+
+                    //onItemChanged(recipe)
 
                     //TODO SOMETIMES LOAD ITEMS FINISHES FIRST
                     //Thread.sleep(1000)
 
                     loadItemsInBackground()
-                    Log.d("App", recipe.recipeToString())
+                    //Log.d("App", recipe.recipeToString())
                 }
                 ResultCode.UNCHANGED.toInt(ResultCode.UNCHANGED) -> Log.d("App", " unchanged hallo")
                 else -> {

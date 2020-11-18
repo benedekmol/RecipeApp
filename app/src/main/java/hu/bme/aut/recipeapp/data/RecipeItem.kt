@@ -16,8 +16,6 @@ class RecipeItem (
     //@ColumnInfo(name = "photo") val photo : String,
     ) {
 
-
-
     fun recipeToString() : String {
         return "{\"id\":\"${id}\"," +
                 "\"name\":\"${name}\"," +
@@ -28,8 +26,5 @@ class RecipeItem (
     fun toJson() : String {
         var gson = Gson()
         return gson.toJson(this)
-
-        //return "halo"
     }
-
 }
