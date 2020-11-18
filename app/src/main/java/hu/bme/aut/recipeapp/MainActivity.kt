@@ -160,6 +160,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
         thread {
             database.recipeItemDao().update(item)
             Log.d("MainActivity", "recipe update was successful")
+            //haloka
         }
     }
 
