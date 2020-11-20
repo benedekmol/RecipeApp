@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_percent="0.40" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarRecipe"
@@ -21,23 +21,25 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/RecipeImage"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
+        android:contentDescription="applepie"
+        android:src="@drawable/applepie"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@id/toolbarRecipe" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="409dp"
-        android:layout_height="494dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/guideline2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2">
+        app:layout_constraintStart_toStartOf="parent">
 
         <EditText
             android:id="@+id/RecipeName"
@@ -61,9 +63,7 @@
             android:gravity="start|top"
             android:inputType="textMultiLine" />
 
-        <include
-            android:id="@+id/include"
-            layout="@layout/content_main" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
