@@ -90,6 +90,8 @@ class RecipeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_recipe)
         setSupportActionBar(toolbarRecipe)
 
+        Toast.makeText(this, image_uri.toString(), Toast.LENGTH_LONG).show()
+
         recipeImage = findViewById<View>(R.id.RecipeImage) as ImageView
         recipeNameEt = findViewById<View>(R.id.RecipeName) as EditText
         recipeIngridientsEt = findViewById<View>(R.id.RecipeIngridients) as EditText
@@ -322,6 +324,11 @@ class RecipeActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        Toast.makeText(this, "returned with activity result", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, resultCode.toString(), Toast.LENGTH_LONG).show()
+        Toast.makeText(this, data.toString(), Toast.LENGTH_LONG).show()
+
 
         when(requestCode) {
             REQUEST_IMAGE_CAPTURE -> {
