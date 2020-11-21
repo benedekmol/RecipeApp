@@ -47,6 +47,7 @@ class RecipeActivity : AppCompatActivity() {
     private var mCurrentPhotoPath: String? = null;
 
     var pictureModified: Boolean = false
+    var newRecipe : Boolean = false
 
     private lateinit var recipe : RecipeItem
 
@@ -91,7 +92,7 @@ class RecipeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_recipe)
         setSupportActionBar(toolbarRecipe)
 
-        Toast.makeText(this, image_uri.toString(), Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "hallo", Toast.LENGTH_LONG).show()
 
         recipeImage = findViewById<View>(R.id.RecipeImage) as ImageView
         recipeNameEt = findViewById<View>(R.id.RecipeName) as EditText
@@ -100,7 +101,7 @@ class RecipeActivity : AppCompatActivity() {
 
         recipeImage!!.setOnClickListener(){
             Log.d("App", "clicked on image")
-            Toast.makeText(this, "3", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "3", Toast.LENGTH_SHORT).show()
 
             if (checkPersmission()) takePicture() else requestPermission()
 
@@ -108,12 +109,16 @@ class RecipeActivity : AppCompatActivity() {
 
         //IF THE RECIPE IS BEEING CREATED:
         if (intent.getStringExtra("RECIPE") == ""){
+
+            Toast.makeText(this, "create", Toast.LENGTH_LONG).show()
+
             //recipeNameEt!!.isEnabled = true
             //recipeIngridientsEt!!.isEnabled = true
             //recipeDirectionsEt!!.isEnabled = true
             RecipeName.isEnabled = true
             RecipeIngridients.isEnabled = true
             RecipeDirections.isEnabled = true
+            newRecipe = true
 
         } else {
             //OTHERWISE LOAD THE RECIPE
@@ -136,7 +141,9 @@ class RecipeActivity : AppCompatActivity() {
             recipeDirectionsEt!!.isEnabled = false
         }
 
-        Log.d("App", "Created recipe activity for recipe: " + recipe.toJson().toString())
+        //Log.d("App", "Created recipe activity for recipe: " + recipe.toJson().toString())
+        Toast.makeText(this, "hallo2", Toast.LENGTH_SHORT).show()
+
     }
 
 
@@ -266,8 +273,6 @@ class RecipeActivity : AppCompatActivity() {
             Log.d("App", e.toString())
         }
 
-
-
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
         this.startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
@@ -282,13 +287,15 @@ class RecipeActivity : AppCompatActivity() {
             REQUEST_IMAGE_CAPTURE -> {
                 if (resultCode == Activity.RESULT_OK){
                     //val auxFile = File(mCurrentPhotoPath)
-                    //TODO
-                    if(recipe.photoUri != "null"){
-                        var picToDelete = File(Uri.parse(recipe.photoUri).path)
-                        picToDelete.delete()
-                    }
+                    if (newRecipe == false){
+                        if(recipe.photoUri != "null"){
+                            var picToDelete = File(Uri.parse(recipe.photoUri).path)
+                            picToDelete.delete()
+                        }
 
-                    recipe = RecipeItem(id = recipe.id, name = recipe.name, ingridients = recipe.ingridients, directions = recipe.directions, photoUri = image_uri.toString())
+                        recipe = RecipeItem(id = recipe.id, name = recipe.name, ingridients = recipe.ingridients, directions = recipe.directions, photoUri = image_uri.toString())
+
+                    }
 
                     Log.d("App", "setting image")
                     RecipeImage.setImageURI(image_uri)

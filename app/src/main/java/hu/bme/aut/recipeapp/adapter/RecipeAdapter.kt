@@ -33,7 +33,10 @@ class RecipeAdapter(private val listener: RecipeItemClickListener):
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val item = items[position]
         holder.nameTextView.text = item.name
-        var photoUri = if (item.photoUri != null) Uri.parse(item.photoUri) else null
+        var photoUri : Uri?  = null
+        if (item.photoUri != null) {
+            photoUri = Uri.parse(item.photoUri)
+        }
         holder.recipeIcon.setImageURI( photoUri )
         holder.item = item
     }
