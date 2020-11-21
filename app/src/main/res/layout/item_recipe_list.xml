@@ -11,7 +11,7 @@
     android:id="@+id/RecipeLayout">
 
     <ImageView
-        android:id="@+id/ShoppingItemIconImageView"
+        android:id="@+id/RecipeImageIcon"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginLeft="8dp"

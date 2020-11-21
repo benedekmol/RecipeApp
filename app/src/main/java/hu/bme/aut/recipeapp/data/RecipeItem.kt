@@ -13,7 +13,7 @@ class RecipeItem (
     @ColumnInfo(name = "name") val name : String,
     @ColumnInfo(name = "ingridients") val ingridients : String,
     @ColumnInfo(name = "directions") val directions : String,
-    //@ColumnInfo(name = "photo") val photo : String,
+    @ColumnInfo(name = "photo") val photoUri : String
     ) {
 
     fun recipeToString() : String {

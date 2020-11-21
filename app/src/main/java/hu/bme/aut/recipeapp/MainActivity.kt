@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
     val LAUNCH_RECIPE_ACTIVITY = 1
 
     //static recipe for testing
-    var recipe  = RecipeItem(id = null, name = "lasagna", ingridients = "tojas", directions = "sussd meg jol")
+    //var recipe  = RecipeItem(id = null, name = "lasagna", ingridients = "tojas", directions = "sussd meg jol")
 
 
 
@@ -75,7 +75,12 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        if (requestCode == 2) {
+            Toast.makeText(this, "called in mainactivity", Toast.LENGTH_LONG).show()
+        }
+
         if (requestCode == LAUNCH_RECIPE_ACTIVITY){
+            Toast.makeText(this, "main onactivityresult", Toast.LENGTH_SHORT).show()
             //IF WE CREATED A RECIPE WE SHOULD SAVE IT IN THE DB
             when (resultCode) {
                 ResultCode.CREATED.toInt(ResultCode.CREATED) -> {
@@ -89,7 +94,8 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
                             id = newId,
                             name = recipe.name,
                             ingridients = recipe.ingridients,
-                            directions = recipe.directions
+                            directions = recipe.directions,
+                            photoUri = recipe.photoUri
                         )
                         runOnUiThread {
                             adapter.addItem(newRecipeItem)

@@ -38,7 +38,7 @@ import java.util.*
 
 class RecipeActivity : AppCompatActivity() {
 
-    val REQUEST_IMAGE_CAPTURE = 1
+    val REQUEST_IMAGE_CAPTURE = 2
 
     private val PERMISSION_REQUEST_CODE = 101
 
@@ -46,6 +46,7 @@ class RecipeActivity : AppCompatActivity() {
 
     private var mCurrentPhotoPath: String? = null;
 
+    var pictureModified: Boolean = false
 
     private lateinit var recipe : RecipeItem
 
@@ -99,7 +100,7 @@ class RecipeActivity : AppCompatActivity() {
 
         recipeImage!!.setOnClickListener(){
             Log.d("App", "clicked on image")
-            Toast.makeText(this, image_uri.toString(), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "3", Toast.LENGTH_LONG).show()
 
             if (checkPersmission()) takePicture() else requestPermission()
 
@@ -107,9 +108,12 @@ class RecipeActivity : AppCompatActivity() {
 
         //IF THE RECIPE IS BEEING CREATED:
         if (intent.getStringExtra("RECIPE") == ""){
-            recipeNameEt!!.isEnabled = true
-            recipeIngridientsEt!!.isEnabled = true
-            recipeDirectionsEt!!.isEnabled = true
+            //recipeNameEt!!.isEnabled = true
+            //recipeIngridientsEt!!.isEnabled = true
+            //recipeDirectionsEt!!.isEnabled = true
+            RecipeName.isEnabled = true
+            RecipeIngridients.isEnabled = true
+            RecipeDirections.isEnabled = true
 
         } else {
             //OTHERWISE LOAD THE RECIPE
@@ -119,14 +123,20 @@ class RecipeActivity : AppCompatActivity() {
             var gson = Gson()
             recipe = gson.fromJson(intent.getStringExtra("RECIPE"), RecipeItem::class.java)
 
-            recipeNameEt!!.setText(recipe.name)
-            recipeIngridientsEt!!.setText(recipe.ingridients)
-            recipeDirectionsEt!!.setText(recipe.directions)
+            //recipeNameEt!!.setText(recipe.name)
+            //recipeIngridientsEt!!.setText(recipe.ingridients)
+            //recipeDirectionsEt!!.setText(recipe.directions)
+            RecipeName.setText(recipe.name)
+            RecipeIngridients.setText(recipe.ingridients)
+            RecipeDirections.setText(recipe.directions)
+            RecipeImage.setImageURI(Uri.parse(recipe.photoUri))
 
             recipeNameEt!!.isEnabled = false
             recipeIngridientsEt!!.isEnabled = false
             recipeDirectionsEt!!.isEnabled = false
         }
+
+        Log.d("App", "Created recipe activity for recipe: " + recipe.toJson().toString())
     }
 
 
@@ -135,7 +145,8 @@ class RecipeActivity : AppCompatActivity() {
         var recipeNew = RecipeItem(id = null,
             name = recipeNameEt!!.getText().toString(),
             ingridients = recipeIngridientsEt!!.getText().toString(),
-            directions = recipeDirectionsEt!!.getText().toString())
+            directions = recipeDirectionsEt!!.getText().toString(),
+            photoUri = image_uri.toString())
 
         var recipeNewJson = recipeNew.toJson()
 
@@ -165,7 +176,7 @@ class RecipeActivity : AppCompatActivity() {
             builder.show()
         } else if(recipe.name == recipeNew.name &&
                 recipe.ingridients == recipeNew.ingridients &&
-                recipe.directions == recipeNew.directions){
+                recipe.directions == recipeNew.directions && !pictureModified ){
             val resultIntent = Intent()
             resultIntent.putExtra("RESULT", "")
             setResult(MainActivity.ResultCode.UNCHANGED.toInt(MainActivity.ResultCode.UNCHANGED),resultIntent)
@@ -180,7 +191,8 @@ class RecipeActivity : AppCompatActivity() {
             var recipeModified = RecipeItem(id = recipe.id,
                 name = recipeNameEt!!.getText().toString(),
                 ingridients = recipeIngridientsEt!!.getText().toString(),
-                directions = recipeDirectionsEt!!.getText().toString())
+                directions = recipeDirectionsEt!!.getText().toString(),
+                photoUri = image_uri.toString())
 
             var recipeModifiedJson = recipeModified.toJson()
             //var recipeModefiedString = recipeModifiedJson.toString()
@@ -239,105 +251,51 @@ class RecipeActivity : AppCompatActivity() {
 
     private fun takePicture() {
         Log.d("App", "Trying to take a picture")
-        /*val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        //val file: File = createFile()
-        /*val uri: Uri = FileProvider.getUriForFile(
-            this,
-            "com.example.android.fileprovider",
-            file
-        )
-         */
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
-         val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-        return File.createTempFile(
-            "JPEGphoto_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            mCurrentPhotoPath = absolutePath
-        }
-         */
 
-        /*val wrapper = ContextWrapper(applicationContext)
-        var file = wrapper.getDir("Images", Context.MODE_PRIVATE)
-        if(!file.exists()){
-            file.mkdir()
-        }
-        file = File(file, "kakimaki.jpg")
-
-        image_uri = Uri.parse(file.absolutePath)*/
-        /*
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        //cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
-        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
-
-         */
-
-
-        /*
-        ///---------------------WOrkS
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "New Picture")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "apple pie")
-        image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        //camera intent
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
-        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
-        */
-
-        /*
-        var path = filesDir
-        Log.d("App", path.toString())
-
-        var dir = File( filesDir, "Images")
-        if (!dir.exists()){
-            dir.mkdir()
-        }
         try {
-            var pic = File(dir, "haloka.jpg")
-            var uri = FileProvider.getUriForFile(this, "hu.bme.aut.recipeapp.fileprovider", pic )
-            Log.d("App", uri.toString())
-        } catch (e: Exception){
+            val dir = applicationContext.filesDir
+            if (dir != null && !dir.exists()){
+                dir.mkdir()
+            }
+            val file = File(dir, UUID.randomUUID().toString() + ".jpg")
+            file.createNewFile()
+
+            image_uri = getUriForFile(this, "hu.bme.aut.recipeapp.fileprovider", file)
+
+        } catch (e : IOException){
             Log.d("App", e.toString())
         }
-         */
 
-        val dir = applicationContext.filesDir
-        if (dir != null && !dir.exists()){
-            dir.mkdir()
-        }
-        val file = File(dir, "test.jpg")
 
-        image_uri = getUriForFile(applicationContext, "hu.bme.aut.recipeapp.fileprovider", file)
 
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
-        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
-
-
-
+        this.startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
 
-        Toast.makeText(this, "returned with activity result", Toast.LENGTH_LONG).show()
-        Toast.makeText(this, resultCode.toString(), Toast.LENGTH_LONG).show()
-        Toast.makeText(this, data.toString(), Toast.LENGTH_LONG).show()
-
-
+        //Toast.makeText(this, "returned with activity result", Toast.LENGTH_LONG).show()
+        //Toast.makeText(this, resultCode.toString(), Toast.LENGTH_LONG).show()
+        //Toast.makeText(this, data.toString(), Toast.LENGTH_LONG).show()
         when(requestCode) {
             REQUEST_IMAGE_CAPTURE -> {
-                if (resultCode == Activity.RESULT_OK && data != null ){
+                if (resultCode == Activity.RESULT_OK){
                     //val auxFile = File(mCurrentPhotoPath)
+                    //TODO
+                    if(recipe.photoUri != "null"){
+                        var picToDelete = File(Uri.parse(recipe.photoUri).path)
+                        picToDelete.delete()
+                    }
+
+                    recipe = RecipeItem(id = recipe.id, name = recipe.name, ingridients = recipe.ingridients, directions = recipe.directions, photoUri = image_uri.toString())
+
                     Log.d("App", "setting image")
                     RecipeImage.setImageURI(image_uri)
-                    Toast.makeText(this, image_uri.toString(), Toast.LENGTH_LONG).show()
+                    pictureModified = true
+                    //Toast.makeText(this, image_uri.toString(), Toast.LENGTH_LONG).show()
                     //RecipeImage.setImageBitmap(data.extras!!.get("data") as Bitmap)
+                    Toast.makeText(this, "returned with activity result", Toast.LENGTH_LONG).show()
 
                     //Log.d("App", image_uri.toString())
 
@@ -349,20 +307,7 @@ class RecipeActivity : AppCompatActivity() {
             }
             else -> Toast.makeText(this, "Unrecognized request code", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    @Throws(IOException::class)
-    private fun createFile(): File {
-        // Create an image file name
-        val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-        return File.createTempFile(
-            "JPEGphoto_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            mCurrentPhotoPath = absolutePath
-        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     fun toggleModifier(){

@@ -1,11 +1,14 @@
 package hu.bme.aut.recipeapp.adapter
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import hu.bme.aut.recipeapp.R
 import hu.bme.aut.recipeapp.data.RecipeItem
@@ -30,6 +33,8 @@ class RecipeAdapter(private val listener: RecipeItemClickListener):
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val item = items[position]
         holder.nameTextView.text = item.name
+        var photoUri = if (item.photoUri != null) Uri.parse(item.photoUri) else null
+        holder.recipeIcon.setImageURI( photoUri )
         holder.item = item
     }
 
@@ -50,6 +55,7 @@ class RecipeAdapter(private val listener: RecipeItemClickListener):
         val nameTextView : TextView
         val removeButton : ImageButton
         val recipeLayout : LinearLayout
+        val recipeIcon : ImageView
 
         var item : RecipeItem? = null
 
@@ -57,6 +63,7 @@ class RecipeAdapter(private val listener: RecipeItemClickListener):
             nameTextView = itemView.findViewById(R.id.RecipeItemNameTextView)
             removeButton = itemView.findViewById(R.id.RecipeItemRemoveButton)
             recipeLayout = itemView.findViewById(R.id.RecipeLayout)
+            recipeIcon = itemView.findViewById(R.id.RecipeImageIcon)
 
             //TODO RemoveButton
             removeButton.setOnClickListener() {
