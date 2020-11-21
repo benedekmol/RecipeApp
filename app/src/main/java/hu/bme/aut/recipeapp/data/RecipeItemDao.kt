@@ -17,10 +17,5 @@ interface RecipeItemDao {
     fun update(recipeItem: RecipeItem)
 
     @Delete
-    fun deleteItem(recipeItem: RecipeItem)  {
-        if (recipeItem.photoUri != "null") {
-            var picToDelete = File(Uri.parse(recipeItem.photoUri).path)
-            picToDelete.delete()
-        }
-    }
+    fun deleteItem(recipeItem: RecipeItem)
 }

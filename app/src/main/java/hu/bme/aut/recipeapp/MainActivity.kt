@@ -1,6 +1,7 @@
 package hu.bme.aut.recipeapp
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import hu.bme.aut.recipeapp.data.RecipeListDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.json.JSONObject
+import java.io.File
 import java.util.zip.Inflater
 import kotlin.concurrent.thread
 
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
         database = Room.databaseBuilder(
             applicationContext,
             RecipeListDatabase::class.java,
-            "recipe-list2"
+            "recipe-list5"
         ).build()
         initRecyclerView()
     }
@@ -142,6 +144,12 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
         thread {
             database.recipeItemDao().deleteItem(item)
             Log.d("MainActivity", "recipe deleted!")
+        }
+        thread {
+            if (item.photoUri != "null") {
+                var picToDelete = File(Uri.parse(item.photoUri).path)
+                picToDelete.delete()
+            }
         }
     }
 

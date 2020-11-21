@@ -1,5 +1,7 @@
 package hu.bme.aut.recipeapp.adapter
+import android.media.ThumbnailUtils
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +10,14 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import hu.bme.aut.recipeapp.R
 import hu.bme.aut.recipeapp.data.RecipeItem
 import hu.bme.aut.recipeapp.data.RecipeItemDao
 import kotlinx.android.synthetic.main.item_recipe_list.view.*
+import java.io.File
 
 
 class RecipeAdapter(private val listener: RecipeItemClickListener):
@@ -30,12 +34,14 @@ class RecipeAdapter(private val listener: RecipeItemClickListener):
         return RecipeViewHolder(itemView)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val item = items[position]
         holder.nameTextView.text = item.name
         var photoUri : Uri?  = null
         if (item.photoUri != null) {
             photoUri = Uri.parse(item.photoUri)
+            //var bitmap = getThumbnail
         }
         holder.recipeIcon.setImageURI( photoUri )
         holder.item = item
