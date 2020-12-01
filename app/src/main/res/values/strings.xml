@@ -7,4 +7,6 @@
     <string name="remove_ingridient">-</string>
     <string name="apple">apple</string>
     <string name="quantity">5kg</string>
+    <string name="ingridients">Ingridients</string>
+    <string name="directions">Directions</string>
 </resources>

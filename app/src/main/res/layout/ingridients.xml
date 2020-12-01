@@ -4,26 +4,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_weight="5">
+    android:weightSum="5"
+    android:padding="10dp">
 
 
     <EditText
-        android:id="@+id/editText"
+        style="@style/IngridientStyle"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
         android:layout_margin="10dp"
         android:text=""
         android:hint="@string/apple"
-        android:layout_weight="2"/>
+        android:layout_weight="2.5"
+        android:layout_width="0dp" />
 
     <EditText
-        android:id="@+id/editText2"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        style="@style/IngridientStyle"
+        android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:text=""
         android:hint="@string/quantity"
-        android:layout_weight="2"/>
+        android:layout_weight="2"
+        android:layout_width="0dp" />
 
     <Button
         android:background="#CA3D3D"
@@ -31,11 +32,11 @@
         android:layout_margin="10dp"
         android:text="@string/remove_ingridient"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_weight="1"/>
+        android:layout_weight="0.5"
+        android:layout_width="0dp" />
 
 
 
