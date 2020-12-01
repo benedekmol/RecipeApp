@@ -21,19 +21,24 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.FileProvider.getUriForFile
+import androidx.core.util.rangeTo
 import com.google.gson.Gson
 import hu.bme.aut.recipeapp.data.RecipeItem
 import kotlinx.android.synthetic.main.activity_recipe.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
+import java.net.URI
 import java.util.*
 
 class RecipeActivity : AppCompatActivity() {
@@ -51,12 +56,13 @@ class RecipeActivity : AppCompatActivity() {
 
     private lateinit var recipe : RecipeItem
 
-    //TODO CAMERA PICTURE TAKE AND STORE
+
+
     //modify
     private var recipeImage : ImageView? = null
     private var recipeString : String? = ""
     private var recipeNameEt : EditText? = null
-    private var recipeIngridientsEt : EditText? = null
+    //private var recipeIngridientsEt : EditText? = null
     private var recipeDirectionsEt : EditText? = null
 
     companion object {
@@ -87,16 +93,64 @@ class RecipeActivity : AppCompatActivity() {
         }
     }
 
+    fun loadIngridients(ing : String) {
+
+        val ingridientsListLayout = findViewById<LinearLayout>(R.id.RecipeIngridientsList) as LinearLayout
+
+        var jsonIngs = JSONArray(ing)
+        for (i in 0 until jsonIngs.length()) {
+            var item = jsonIngs.getJSONObject(i)
+            var name = item.keys().next()
+            var quantity = item.getString(name)
+
+            var to_add = layoutInflater.inflate(R.layout.ingridients, null,false) as ConstraintLayout
+            var nameET = to_add.getChildAt(0) as EditText
+            var quanatityET = to_add.getChildAt(1) as EditText
+            nameET.setText(name)
+            quanatityET.setText(quantity)
+            ingridientsListLayout.addView(to_add)
+        }
+    }
+
+    fun saveIngridients() : String {
+        var ings : JSONArray = JSONArray()
+        var recipeIngList = findViewById<LinearLayout>(R.id.RecipeIngridientsList) as LinearLayout
+        for (i in 0 until recipeIngList.childCount ) {
+            var ingridient = recipeIngList.getChildAt(i) as ConstraintLayout
+            var ingName = ingridient.getChildAt(0) as EditText
+            var ingQuantity = ingridient.getChildAt(1) as EditText
+            var ing = JSONObject()
+            ing.put(ingName.text.toString(), ingQuantity.text.toString())
+
+            ings.put(ing)
+        }
+        return ings.toString()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe)
         setSupportActionBar(toolbarRecipe)
 
+        //for (i in 0..4) {
+        //    var to_add = layoutInflater.inflate(R.layout.ingridients, null,false)
+        //    ingridientsListLayout.addView(to_add)
+        //}
+
+
         Toast.makeText(this, "hallo", Toast.LENGTH_LONG).show()
+
+
+        addIngridient.setOnClickListener(){
+            val ingridientsListLayout = findViewById<LinearLayout>(R.id.RecipeIngridientsList) as LinearLayout
+            var to_add = layoutInflater.inflate(R.layout.ingridients, null,false) as ConstraintLayout
+            ingridientsListLayout.addView(to_add)
+        }
+
 
         recipeImage = findViewById<View>(R.id.RecipeImage) as ImageView
         recipeNameEt = findViewById<View>(R.id.RecipeName) as EditText
-        recipeIngridientsEt = findViewById<View>(R.id.RecipeIngridients) as EditText
+        //recipeIngridientsEt = findViewById<View>(R.id.RecipeIngridients) as EditText
         recipeDirectionsEt = findViewById<View>(R.id.RecipeDirections) as EditText
 
         recipeImage!!.setOnClickListener(){
@@ -116,7 +170,7 @@ class RecipeActivity : AppCompatActivity() {
             //recipeIngridientsEt!!.isEnabled = true
             //recipeDirectionsEt!!.isEnabled = true
             RecipeName.isEnabled = true
-            RecipeIngridients.isEnabled = true
+            //RecipeIngridients.isEnabled = true
             RecipeDirections.isEnabled = true
             newRecipe = true
 
@@ -124,20 +178,21 @@ class RecipeActivity : AppCompatActivity() {
             //OTHERWISE LOAD THE RECIPE
             var recipeJSON = JSONObject(intent.getStringExtra("RECIPE").toString())
 
-            //TODO JSON WORKS!
             var gson = Gson()
             recipe = gson.fromJson(intent.getStringExtra("RECIPE"), RecipeItem::class.java)
 
+            //LOAD THE INGRIDIENTS
+            loadIngridients(recipe.ingridients)
             //recipeNameEt!!.setText(recipe.name)
             //recipeIngridientsEt!!.setText(recipe.ingridients)
             //recipeDirectionsEt!!.setText(recipe.directions)
             RecipeName.setText(recipe.name)
-            RecipeIngridients.setText(recipe.ingridients)
+            //RecipeIngridients.setText(recipe.ingridients)
             RecipeDirections.setText(recipe.directions)
             RecipeImage.setImageURI(Uri.parse(recipe.photoUri))
-
+            image_uri = Uri.parse(recipe.photoUri)
             recipeNameEt!!.isEnabled = false
-            recipeIngridientsEt!!.isEnabled = false
+            //recipeIngridientsEt!!.isEnabled = false
             recipeDirectionsEt!!.isEnabled = false
         }
 
@@ -151,7 +206,7 @@ class RecipeActivity : AppCompatActivity() {
     override fun onBackPressed() {
         var recipeNew = RecipeItem(id = null,
             name = recipeNameEt!!.getText().toString(),
-            ingridients = recipeIngridientsEt!!.getText().toString(),
+            ingridients = saveIngridients(),
             directions = recipeDirectionsEt!!.getText().toString(),
             photoUri = image_uri.toString())
 
@@ -191,13 +246,14 @@ class RecipeActivity : AppCompatActivity() {
             super.onBackPressed()
 
         } else {
+
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Sure?")
             builder.setMessage("Modify the recipe?")
 
             var recipeModified = RecipeItem(id = recipe.id,
                 name = recipeNameEt!!.getText().toString(),
-                ingridients = recipeIngridientsEt!!.getText().toString(),
+                ingridients = saveIngridients(),
                 directions = recipeDirectionsEt!!.getText().toString(),
                 photoUri = image_uri.toString())
 
@@ -319,7 +375,6 @@ class RecipeActivity : AppCompatActivity() {
 
     fun toggleModifier(){
         recipeNameEt!!.isEnabled = !recipeNameEt!!.isEnabled
-        recipeIngridientsEt!!.isEnabled = !recipeIngridientsEt!!.isEnabled
         recipeDirectionsEt!!.isEnabled = !recipeDirectionsEt!!.isEnabled
     }
 }

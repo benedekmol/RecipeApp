@@ -47,22 +47,45 @@
             android:layout_height="wrap_content"
             android:text="Almás Pite" />
 
-        <EditText
+        <!--<EditText
             android:id="@+id/RecipeIngridients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:gravity="start|top"
             android:inputType="textMultiLine" />
+        -->
+        <LinearLayout
+            android:id="@+id/RecipeIngridientsList"
+            android:layout_width="409dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/RecipeDirections"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/RecipeIngridients">
 
-        <EditText
-            android:id="@+id/RecipeDirections"
+
+        </LinearLayout>
+
+
+
+
+    <EditText
+        android:id="@+id/RecipeDirections"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        tools:layout_editor_absoluteX="13dp"
+        tools:layout_editor_absoluteY="606dp" />
+
+        <Button
+            android:id="@+id/addIngridient"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:gravity="start|top"
-            android:inputType="textMultiLine" />
-
+            android:text="Button" />
 
     </LinearLayout>
 

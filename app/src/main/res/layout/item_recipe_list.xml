@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/RecipeImageIcon"
-            android:layout_width="199dp"
-            android:layout_height="197dp"
+            android:layout_width="342dp"
+            android:layout_height="229dp"
             android:padding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
