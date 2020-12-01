@@ -1,10 +1,8 @@
 package hu.bme.aut.recipeapp.adapter
 
-import android.app.Activity
-import android.app.Application
-import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,14 +13,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import hu.bme.aut.recipeapp.R
 import hu.bme.aut.recipeapp.data.RecipeItem
-import hu.bme.aut.recipeapp.data.RecipeItemDao
-import kotlinx.android.synthetic.main.item_recipe_list.view.*
-import java.io.File
-import kotlin.concurrent.thread
 
 
 class RecipeAdapter(private val listener: RecipeItemClickListener) :
@@ -82,12 +75,26 @@ class RecipeAdapter(private val listener: RecipeItemClickListener) :
 
             removeButton.setOnClickListener() {
                 Log.d("App", "Recipe deleting from adapter")
-                var pos = items.indexOf(item)
-                removeItem(item!!)
-                listener.onItemRemoved(item!!)
+
                 recipeLayout.startAnimation(moveAnim)
-                //notifyDataSetChanged() didn't work well
-                notifyItemRemoved(pos)
+
+
+                Handler().postDelayed(Runnable {
+                    var pos = items.indexOf(item)
+                    removeItem(item!!)
+                    listener.onItemRemoved(item!!)
+                    //notifyDataSetChanged() didn't work well
+
+                    notifyItemRemoved(pos)
+                }, 500)
+
+                //var pos = items.indexOf(item)
+                //removeItem(item!!)
+                //listener.onItemRemoved(item!!)
+                ////notifyDataSetChanged() didn't work well
+                //Thread.sleep(2000)
+//
+                //notifyItemRemoved(pos)
             }
 
             recipeLayout.setOnClickListener() {
