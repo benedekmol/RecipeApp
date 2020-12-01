@@ -18,7 +18,7 @@
         android:id="@+id/toolbarRecipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
+        android:background="#7ea4b3"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
         database = Room.databaseBuilder(
             applicationContext,
             RecipeListDatabase::class.java,
-            "recipe-list5"
+            "recipe-list6"
         ).build()
         initRecyclerView()
 
