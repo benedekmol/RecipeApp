@@ -24,69 +24,69 @@
         android:id="@+id/RecipeImage"
         android:layout_width="350dp"
         android:layout_height="200dp"
-        android:contentDescription="applepie"
+        android:contentDescription="@string/applepie"
         android:src="@drawable/applepie"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbarRecipe" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/guideline2"
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="380dp"
+        android:layout_height="417dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2">
 
-        <EditText
-            android:id="@+id/RecipeName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Almás Pite" />
-
-        <!--<EditText
-            android:id="@+id/RecipeIngridients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:gravity="start|top"
-            android:inputType="textMultiLine" />
-        -->
         <LinearLayout
-            android:id="@+id/RecipeIngridientsList"
+            android:id="@+id/linearLayout"
             android:layout_width="409dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/RecipeDirections"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/RecipeIngridients">
+            app:layout_constraintTop_toBottomOf="@+id/guideline2">
 
+            <EditText
+                android:id="@+id/RecipeName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/apple_pie"
+                android:text="@string/apple_pie" />
+
+            <LinearLayout
+                android:id="@+id/RecipeIngridientsList"
+                android:layout_width="409dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/RecipeDirections"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/RecipeIngridients">
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/addIngridient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_ingridient" />
+
+            <EditText
+                android:id="@+id/RecipeDirections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                tools:layout_editor_absoluteX="13dp"
+                tools:layout_editor_absoluteY="606dp"
+                android:hint="@string/bake_it_real_good"/>
 
         </LinearLayout>
-
-
-
-
-    <EditText
-        android:id="@+id/RecipeDirections"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        tools:layout_editor_absoluteX="13dp"
-        tools:layout_editor_absoluteY="606dp" />
-
-        <Button
-            android:id="@+id/addIngridient"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button" />
-
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

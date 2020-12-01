@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">RecipeApp</string>
+    <string name="add_ingridient">Add Ingridient</string>
+    <string name="apple_pie">Apple Pie</string>
+    <string name="bake_it_real_good">Bake it real good.</string>
+    <string name="applepie">applepie</string>
+    <string name="remove_ingridient">-</string>
+    <string name="apple">apple</string>
+    <string name="quantity">5kg</string>
 </resources>
