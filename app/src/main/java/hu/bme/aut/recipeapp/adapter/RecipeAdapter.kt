@@ -17,13 +17,14 @@ import androidx.recyclerview.widget.RecyclerView
 import hu.bme.aut.recipeapp.R
 import hu.bme.aut.recipeapp.data.RecipeItem
 
-
+//ADAPTER FOR THE PERSISTENT DATA STORAGE
 class RecipeAdapter(private val listener: RecipeItemClickListener) :
     RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
+    //RECIPES
     private val items = mutableListOf<RecipeItem>()
 
-
+    //ATTACH LAYOUT TO THE ITEM
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
         val itemView: View = LayoutInflater
             .from(parent.context)
@@ -32,6 +33,7 @@ class RecipeAdapter(private val listener: RecipeItemClickListener) :
         return RecipeViewHolder(itemView)
     }
 
+    //BIND THE LAYOUT TO THE RECIPE ITEM
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val item = items[position]
@@ -40,13 +42,12 @@ class RecipeAdapter(private val listener: RecipeItemClickListener) :
         var photoUri: Uri? = null
         if (item.photoUri != null) {
             photoUri = Uri.parse(item.photoUri)
-            //var bitmap = getThumbnail
         }
         holder.recipeIcon.setImageURI(photoUri)
         holder.item = item
     }
 
-
+    //INTERFACE FOR THE DATA STORAGE
     interface RecipeItemClickListener {
         fun onItemChanged(item: RecipeItem)
         fun onItemRemoved(item: RecipeItem)
@@ -73,12 +74,12 @@ class RecipeAdapter(private val listener: RecipeItemClickListener) :
             recipeLayout = itemView.findViewById(R.id.RecipeLayout)
             recipeIcon = itemView.findViewById(R.id.RecipeImageIcon)
 
+            //REMOVE BUTTON DOES THIS:
             removeButton.setOnClickListener() {
                 Log.d("App", "Recipe deleting from adapter")
 
                 recipeLayout.startAnimation(moveAnim)
-
-
+                //DELAY THE ITEM REMOVED NOTIFY (ANIMATION DIDN'T WORK OTHERWISE)
                 Handler().postDelayed(Runnable {
                     var pos = items.indexOf(item)
                     removeItem(item!!)
@@ -87,14 +88,6 @@ class RecipeAdapter(private val listener: RecipeItemClickListener) :
 
                     notifyItemRemoved(pos)
                 }, 500)
-
-                //var pos = items.indexOf(item)
-                //removeItem(item!!)
-                //listener.onItemRemoved(item!!)
-                ////notifyDataSetChanged() didn't work well
-                //Thread.sleep(2000)
-//
-                //notifyItemRemoved(pos)
             }
 
             recipeLayout.setOnClickListener() {

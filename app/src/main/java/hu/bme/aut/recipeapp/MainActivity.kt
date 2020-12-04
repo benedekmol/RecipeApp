@@ -26,18 +26,20 @@ import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener {
 
+    //RESULT CODE OF THE RECIPEACTIVITY
     enum class ResultCode {
-        CREATED,
-        MODIFIED,
-        DELETED,
-        ABORTED,
-        UNCHANGED;
+        CREATED, //CREATE A RECIPE
+        MODIFIED, //MODIFY A RECIPE
+        DELETED, //DELETE A RECIPE
+        ABORTED, //DIDNT ACCEPT MODIFICATIONS
+        UNCHANGED; //DIDNT CHANGE THE RECIPE
 
         fun toInt(resultCode: ResultCode): Int {
             return resultCode.ordinal
         }
     }
 
+    //
     val FIRST_START = "MyFirstStart"
 
     var ricottaCake = RecipeItem(
@@ -99,7 +101,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
     //static recipe for testing
     //var recipe  = RecipeItem(id = null, name = "lasagna", ingridients = "tojas", directions = "sussd meg jol")
 
-
+    //PERSISTENT DATA STORAGE
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecipeAdapter
     private lateinit var database: RecipeListDatabase
@@ -109,6 +111,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        //FAB CALLS THE RECIPEACTIVITY WITH AN EMPTY RECIPE VALUE
         fab.setOnClickListener {
             //INTENT TO RECIPE ACTIVITY TO CREATE RECIPE
             val showRecipeIntent = Intent()
@@ -117,18 +120,17 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
             startActivityForResult(showRecipeIntent, LAUNCH_RECIPE_ACTIVITY)
         }
 
-
+        //ADD INITIAL RECIPES TO A LIST
         firstRecipes.add(ricottaCake)
         firstRecipes.add(muhallabia)
         firstRecipes.add(rhubarb_tarts)
         firstRecipes.add(apple_pie)
 
-
-        //TODO CHANGING DATABSASE VERSION!!
+        //changing the database version!!
         database = Room.databaseBuilder(
             applicationContext,
             RecipeListDatabase::class.java,
-            "recipe-list6"
+            "recipe-list"
         ).build()
         initRecyclerView()
 
@@ -155,18 +157,21 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
         }
     }
 
+    //RECIPEACTIVITY RESULT ACTIONS
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == LAUNCH_RECIPE_ACTIVITY) {
             //IF WE CREATED A RECIPE WE SHOULD SAVE IT IN THE DB
             when (resultCode) {
-                ResultCode.CREATED.toInt(ResultCode.CREATED) -> {
+                ResultCode.CREATED.toInt(ResultCode.CREATED) -> {  //WE CREATED A RECIPE
 
+                    //LOADING THE RESULT JSON INTO A RECIPEITEM OBJECT
                     var gson = Gson()
                     var recipe =
                         gson.fromJson(data?.getStringExtra("RESULT"), RecipeItem::class.java)
 
+                    //ADDING THE RECIPE TO THE DATABASE
                     thread {
                         val newId = database.recipeItemDao().insert(recipe)
                         val newRecipeItem = RecipeItem(
@@ -181,28 +186,33 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
                         }
                     }
                 }
-                ResultCode.ABORTED.toInt(ResultCode.ABORTED) -> Log.d("App", "halasdfasdfasdf")
-                ResultCode.MODIFIED.toInt(ResultCode.MODIFIED) -> {
+                ResultCode.ABORTED.toInt(ResultCode.ABORTED) -> Log.d(
+                    "App",
+                    "halasdfasdfasdf"
+                ) //WE ABORTED THE CREATION OF THE RECIPE
+                ResultCode.MODIFIED.toInt(ResultCode.MODIFIED) -> { //MODIFIED EXISTING RECIPE
 
+                    //LOADING THE RECIPEITEM FROM RESULT JSON
                     var gson = Gson()
                     var recipeModified =
                         gson.fromJson(data?.getStringExtra("RESULT"), RecipeItem::class.java)
-                    Log.d("App", "gson parsolas" + recipeModified.id)
                     onItemChanged(recipeModified)
 
 
-                    //TODO SOMETIMES LOAD ITEMS FINISHES FIRST
+                    //SOMETIMES LOAD ITEMS FINISHES FIRST
                     Thread.sleep(1000)
 
+                    //REFRESING THE RECYCLERVIEW
                     loadItemsInBackground()
                 }
-                ResultCode.UNCHANGED.toInt(ResultCode.UNCHANGED) -> Log.d("App", " unchanged hallo")
+                ResultCode.UNCHANGED.toInt(ResultCode.UNCHANGED) -> Log.d("App", "Recipe unchanged") //DIDNT CHANGE THE RECIPE
                 else -> {
-                    Log.d("App", "egyik sem")
+                    Log.d("App", "wrong result code")
                 }
             }
         }
     }
+
 
     private fun initRecyclerView() {
         recyclerView = MainRecyclerView
@@ -226,6 +236,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
             database.recipeItemDao().deleteItem(item)
             Log.d("MainActivity", "recipe deleted!")
         }
+        //DELETING THE PICTURE FROM INTERNAL STORAGE
         thread {
             if (item.photoUri != "null") {
                 var picToDelete = File(Uri.parse(item.photoUri).path)
@@ -234,6 +245,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
         }
     }
 
+    //IF WE SELECT AN ITEM
     override fun onItemSelected(item: RecipeItem) {
         val showRecipeIntent = Intent()
         showRecipeIntent.setClass(this@MainActivity, RecipeActivity::class.java)
@@ -242,6 +254,7 @@ class MainActivity : AppCompatActivity(), RecipeAdapter.RecipeItemClickListener 
         Log.d("App", "to json: " + item.toJson())
     }
 
+    //MODIFYING RECIPE ON RECYCLERVIEW
     override fun onItemChanged(item: RecipeItem) {
         thread {
             database.recipeItemDao().update(item)

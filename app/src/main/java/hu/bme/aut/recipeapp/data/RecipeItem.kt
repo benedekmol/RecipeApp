@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
+//RECIPE ITEM
 @Entity(tableName = "recipeitem")
 class RecipeItem (
     @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id : Long?,
@@ -16,13 +17,7 @@ class RecipeItem (
     @ColumnInfo(name = "photo") val photoUri : String
     ) {
 
-    fun recipeToString() : String {
-        return "{\"id\":\"${id}\"," +
-                "\"name\":\"${name}\"," +
-                "\"ingridients\":\"${ingridients}\"," +
-                "\"directions\":\"${directions}\"}"
-    }
-
+    //CREATING A JSON OUT OF THE RECIPE
     fun toJson() : String {
         var gson = Gson()
         return gson.toJson(this)
